@@ -13,7 +13,7 @@ public struct Carousel<C:View,I:View>: View {
     private var _indicator: IAB_CListener<Binding<Int>,Int,I>
     //
     private let _timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
-    @State private var slideGesture: CGSize = CGSize.zero
+    @State private var _slideGesture: CGSize = CGSize.zero
     @State private var _currentIndex: Int = 0
     
     //
@@ -47,24 +47,24 @@ public struct Carousel<C:View,I:View>: View {
                 .gesture(
                     DragGesture()
                         .onChanged{ value in
-                            self.slideGesture = value.translation
+                            self._slideGesture = value.translation
                         }
                         .onEnded{ value in
-                            if self.slideGesture.width < -50 {
+                            if self._slideGesture.width < -50 {
                                 if self._currentIndex < self._numberContent - 1 {
                                     withAnimation {
                                         self._currentIndex += 1
                                     }
                                 }
                             }
-                            if self.slideGesture.width > 50 {
+                            if self._slideGesture.width > 50 {
                                 if self._currentIndex > 0 {
                                     withAnimation {
                                         self._currentIndex -= 1
                                     }
                                 }
                             }
-                            self.slideGesture = .zero
+                            self._slideGesture = .zero
                         })
                 
                 // 2
@@ -153,6 +153,6 @@ struct ImageCarouselView_Previews: PreviewProvider {
         , indicator: { b,n in
             Indicator(currentIndex: b, numberContent: n)
         })
-            .frame(width: .infinity, height: 300, alignment: .center)
+        .frame(width: .infinity, height: 300, alignment: .center)
     }
 }
