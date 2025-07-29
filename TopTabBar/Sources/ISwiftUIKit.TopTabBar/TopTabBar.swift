@@ -7,7 +7,7 @@
 import SwiftUI
 import SUtilKit_SwiftUI
 
-struct TabBarView<T,V:View>: View {
+public struct TopTabBar<T,V:View>: View {
     @State private var _indexSelected: Int = 0 {
         didSet{
             _selectListener?(_datas[_indexSelected], _indexSelected)
@@ -18,7 +18,7 @@ struct TabBarView<T,V:View>: View {
     private var _selectListener: IAB_Listener<T,Int>? = nil
     private let _leftOffset: CGFloat = 0.1
     
-    init(
+    public init(
         datas: [T],
         @ViewBuilder content:@escaping IABC_DListener<T, Int, Int, V>,
         indexDefault:Int = 0,
@@ -29,7 +29,7 @@ struct TabBarView<T,V:View>: View {
             self._selectListener = selectListener
         }
     
-    var body: some View {
+    public var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false){
                 HStack {
@@ -90,7 +90,7 @@ struct TabBarView<T,V:View>: View {
 let items = ["首页", "发现", "消息", "我的","其他","特色"]
 
 #Preview {
-    TabBarView(
+    TopTabBar(
         datas: items,
         content: { item, index, selectedIndex in
             Text(item)

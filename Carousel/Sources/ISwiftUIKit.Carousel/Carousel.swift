@@ -5,10 +5,12 @@ import Foundation
 import Combine
 import SUtilKit_SwiftUI
 
-public struct Carousel<C:View,I:View>: View {
-    
-    private var _numberContent: Int
-    private var _content: IA_BListener<GeometryProxy,C>
+public struct Carousel<T:Identifiable,C:View,I:View>: View {
+    private var _datas:[T]
+    private var _numberContent: Int {
+        return _datas.count
+    }
+    private var _content: IAB_CListener<GeometryProxy,T,C>
     private var _spacing: CGFloat = 0
     private var _indicator: IAB_CListener<Binding<Int>,Int,I>
     //
@@ -18,12 +20,12 @@ public struct Carousel<C:View,I:View>: View {
     
     //
     public init(
-        numberContent: Int,
+        datas:[T],
         spacing: CGFloat = 0,
-        @ViewBuilder content: @escaping IA_BListener<GeometryProxy,C>,
+        @ViewBuilder content: @escaping  IAB_CListener<GeometryProxy,T,C>,
         @ViewBuilder indicator: @escaping IAB_CListener<Binding<Int>,Int,I>
         ) {
-            self._numberContent = numberContent
+            self._datas = datas
             self._content = content
             self._spacing = spacing
             self._indicator = indicator
@@ -35,7 +37,9 @@ public struct Carousel<C:View,I:View>: View {
             // 1
             ZStack(alignment: .bottom) {
                 HStack(spacing: _spacing) {
-                    self._content(geometry)
+                    ForEach(_datas) {data in
+                        self._content(geometry,data)
+                    }
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
                 .offset(x: CGFloat(self._currentIndex) * -geometry.size.width, y: 0)
@@ -102,57 +106,57 @@ public struct Indicator: View {
     }
 }
 
-struct ImageCarouselView_Previews: PreviewProvider {
-    static var previews: some View {
-        
-        // 8
-        Carousel(numberContent: 3, content: {geometry in
-                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
-                    switch p {
-                    case .failure:
-                        Image(systemName: "photo")
-                            .font(.largeTitle)
-                    case.success(let image):
-                        image.resizable()
-                    default:
-                        ProgressView()
-                    }
-                })
-                .scaledToFill()
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .clipped()
-                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
-                    switch p {
-                    case .failure:
-                        Image(systemName: "photo")
-                            .font(.largeTitle)
-                    case.success(let image):
-                        image.resizable()
-                    default:
-                        ProgressView()
-                    }
-                })
-                .scaledToFill()
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .clipped()
-                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
-                    switch p {
-                    case .failure:
-                        Image(systemName: "photo")
-                            .font(.largeTitle)
-                    case.success(let image):
-                        image.resizable()
-                    default:
-                        ProgressView()
-                    }
-                })
-                .scaledToFill()
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .clipped()
-            }
-        , indicator: { b,n in
-            Indicator(currentIndex: b, numberContent: n)
-        })
-        .frame(width: .infinity, height: 300, alignment: .center)
-    }
-}
+//struct ImageCarouselView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        
+//        // 8
+//        Carousel(numberContent: 3, content: {geometry in
+//                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
+//                    switch p {
+//                    case .failure:
+//                        Image(systemName: "photo")
+//                            .font(.largeTitle)
+//                    case.success(let image):
+//                        image.resizable()
+//                    default:
+//                        ProgressView()
+//                    }
+//                })
+//                .scaledToFill()
+//                .frame(width: geometry.size.width, height: geometry.size.height)
+//                .clipped()
+//                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
+//                    switch p {
+//                    case .failure:
+//                        Image(systemName: "photo")
+//                            .font(.largeTitle)
+//                    case.success(let image):
+//                        image.resizable()
+//                    default:
+//                        ProgressView()
+//                    }
+//                })
+//                .scaledToFill()
+//                .frame(width: geometry.size.width, height: geometry.size.height)
+//                .clipped()
+//                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
+//                    switch p {
+//                    case .failure:
+//                        Image(systemName: "photo")
+//                            .font(.largeTitle)
+//                    case.success(let image):
+//                        image.resizable()
+//                    default:
+//                        ProgressView()
+//                    }
+//                })
+//                .scaledToFill()
+//                .frame(width: geometry.size.width, height: geometry.size.height)
+//                .clipped()
+//            }
+//        , indicator: { b,n in
+//            Indicator(currentIndex: b, numberContent: n)
+//        })
+//        .frame(width: .infinity, height: 300, alignment: .center)
+//    }
+//}
