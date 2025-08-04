@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import ScalingHeaderScrollView
+//import ScalingHeaderScrollView
 
 struct ContentView: View {
     @Environment(\.presentationMode) var presentationMode

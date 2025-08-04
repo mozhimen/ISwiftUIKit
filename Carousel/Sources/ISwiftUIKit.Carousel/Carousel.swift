@@ -24,19 +24,19 @@ public struct Carousel<T:Identifiable,C:View,I:View>: View {
         spacing: CGFloat = 0,
         @ViewBuilder content: @escaping  IAB_CListener<GeometryProxy,T,C>,
         @ViewBuilder indicator: @escaping IAB_CListener<Binding<Int>,Int,I>
-        ) {
-            self._datas = datas
-            self._content = content
-            self._spacing = spacing
-            self._indicator = indicator
-        }
+    ) {
+        self._datas = datas
+        self._content = content
+        self._spacing = spacing
+        self._indicator = indicator
+    }
     
     //
     public var body: some View {
         GeometryReader { geometry in
             // 1
             ZStack(alignment: .bottom) {
-                HStack(spacing: _spacing) {
+                LazyHStack(spacing: _spacing) {
                     ForEach(_datas) {data in
                         self._content(geometry,data)
                     }
@@ -49,7 +49,7 @@ public struct Carousel<T:Identifiable,C:View,I:View>: View {
                     self._currentIndex = (self._currentIndex + 1) % (self._numberContent == 0 ? 1 : self._numberContent)}
                 // Comment .gesture method, to omit the Swipe function
                 .gesture(
-                    DragGesture()
+                    DragGesture(minimumDistance: 20)
                         .onChanged{ value in
                             self._slideGesture = value.translation
                         }
@@ -70,7 +70,6 @@ public struct Carousel<T:Identifiable,C:View,I:View>: View {
                             }
                             self._slideGesture = .zero
                         })
-                
                 // 2
                 _indicator($_currentIndex,_numberContent)
             }
@@ -94,13 +93,18 @@ public struct Indicator: View {
         HStack(spacing: spacing) {
             ForEach(0..<self.numberContent, id: \.self) { index in
                 Circle()
-//                    .frame(width: index == self.currentIndex ? 10 : 8,
-//                           height: index == self.currentIndex ? 10 : 8)
+                //                    .frame(width: index == self.currentIndex ? 10 : 8,
+                //                           height: index == self.currentIndex ? 10 : 8)
                     .frame(width: 8,height: 8)
                     .foregroundColor(index == self.currentIndex ? selectColor  : unselectColor)
-//                    .overlay(Circle().stroke(Color.gray, lineWidth: 1))
+                //                    .overlay(Circle().stroke(Color.gray, lineWidth: 1))
                     .padding(.bottom, 8)
                     .animation(.spring())
+                    .onTapGesture {
+                        withAnimation {
+                            currentIndex = index
+                        }
+                    }
             }
         }
     }
@@ -108,7 +112,7 @@ public struct Indicator: View {
 
 //struct ImageCarouselView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        
+//
 //        // 8
 //        Carousel(numberContent: 3, content: {geometry in
 //                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
