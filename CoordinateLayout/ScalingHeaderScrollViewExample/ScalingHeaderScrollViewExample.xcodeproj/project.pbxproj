@@ -211,10 +211,6 @@
 			);
 			name = ScalingHeaderScrollViewExample;
 			packageProductDependencies = (
-				F79A9F502E3CC6CF009DD9B6 /* ISwiftUIKit.CoordinateLayout */,
-				F7CFE1D32E4045C000317B61 /* ISwiftUIKit.CoordinateLayout */,
-				F7CFE1D42E4046A500317B61 /* ISwiftUIKit.CoordinateLayout */,
-				F7F5176E2E4064B0005A7C59 /* ISwiftUIKit.CoordinateLayout */,
 				F7F517702E40652D005A7C59 /* ISwiftUIKit.CoordinateLayout */,
 			);
 			productName = ScalingHeaderScrollViewExample;
@@ -246,7 +242,7 @@
 			);
 			mainGroup = 5B92B48A2D9A7403007CAF13;
 			packageReferences = (
-				F7F5176F2E40652D005A7C59 /* XCLocalSwiftPackageReference "../../CoordinateLayout" */,
+				F7F5176F2E40652D005A7C59 /* XCLocalSwiftPackageReference "../CoordinateLayout" */,
 			);
 			productRefGroup = 5B92B4942D9A7403007CAF13 /* Products */;
 			projectDirPath = "";
@@ -513,29 +509,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		F7F5176F2E40652D005A7C59 /* XCLocalSwiftPackageReference "../../CoordinateLayout" */ = {
+		F7F5176F2E40652D005A7C59 /* XCLocalSwiftPackageReference "../CoordinateLayout" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../CoordinateLayout;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F79A9F502E3CC6CF009DD9B6 /* ISwiftUIKit.CoordinateLayout */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ISwiftUIKit.CoordinateLayout;
-		};
-		F7CFE1D32E4045C000317B61 /* ISwiftUIKit.CoordinateLayout */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ISwiftUIKit.CoordinateLayout;
-		};
-		F7CFE1D42E4046A500317B61 /* ISwiftUIKit.CoordinateLayout */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ISwiftUIKit.CoordinateLayout;
-		};
-		F7F5176E2E4064B0005A7C59 /* ISwiftUIKit.CoordinateLayout */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ISwiftUIKit.CoordinateLayout;
-		};
 		F7F517702E40652D005A7C59 /* ISwiftUIKit.CoordinateLayout */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ISwiftUIKit.CoordinateLayout;
