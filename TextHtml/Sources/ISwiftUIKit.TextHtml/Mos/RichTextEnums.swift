@@ -72,6 +72,7 @@ public enum ColorScheme {
     case light
     case dark
     case auto
+    case tran//透明
 }
 
 // MARK: - Deprected Enums

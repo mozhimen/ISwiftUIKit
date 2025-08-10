@@ -88,18 +88,19 @@ public struct Configuration {
         }
     }
     
-    private func backgroundColor(_ isLight: Bool) -> String {
-        if isLight {
-            return "white \(forceColorSchemeBackground ? "!important": "")"
+    private func backgroundColor(_ isLight: Bool, isTransparent: Bool = false) -> String {
+        if isTransparent {
+            return "transparent \(forceColorSchemeBackground ? "!important" : "")"
         } else {
-            return "black \(forceColorSchemeBackground ? "!important": "")"
+            return isLight ? "white \(forceColorSchemeBackground ? "!important" : "")"
+                           : "black \(forceColorSchemeBackground ? "!important" : "")"
         }
     }
     
-    func css(isLight: Bool, alignment: TextAlignment) -> String {
+    func css(isLight: Bool, isTransparent: Bool, alignment: TextAlignment) -> String {
         """
         img{max-height: 100%; min-height: 100%; height:auto; max-width: 100%; width:auto;margin-bottom:5px; border-radius: \(imageRadius)px;}
-        h1, h2, h3, h4, h5, h6, p, div, dl, ol, ul, pre, blockquote {text-align:\(alignment.htmlDescription); line-height: \(lineHeight)%; font-family: '\(fontType.name)' !important; color: \(fontColor.value(isLight)); background-color: \(backgroundColor(isLight)); }
+        h1, h2, h3, h4, h5, h6, p, div, dl, ol, ul, pre, blockquote {text-align:\(alignment.htmlDescription); line-height: \(lineHeight)%; font-family: '\(fontType.name)' !important; color: \(fontColor.value(isLight)); background-color: \(backgroundColor(isLight,isTransparent: isTransparent)); }
         iframe{width:100%; height:250px;}
         a:link {color: \(linkColor.value(isLight));}
         A {text-decoration: none;}

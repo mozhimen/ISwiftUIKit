@@ -211,7 +211,7 @@ extension WebView {
         case .light:
             return """
             <style type='text/css'>
-                \(conf.css(isLight: true, alignment: alignment))
+                \(conf.css(isLight: true,isTransparent: false, alignment: alignment))
                 \(conf.customCSS)
                 body {
                     margin: 0;
@@ -223,7 +223,19 @@ extension WebView {
         case .dark:
             return """
             <style type='text/css'>
-                \(conf.css(isLight: false, alignment: alignment))
+                \(conf.css(isLight: false,isTransparent: false, alignment: alignment))
+                \(conf.customCSS)
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
+            </style>
+            <BODY>
+            """
+        case .tran:
+            return """
+            <style type='text/css'>
+                \(conf.css(isLight: false,isTransparent: true, alignment: alignment))
                 \(conf.customCSS)
                 body {
                     margin: 0;
@@ -236,10 +248,10 @@ extension WebView {
             return """
             <style type='text/css'>
             @media (prefers-color-scheme: light) {
-                \(conf.css(isLight: true, alignment: alignment))
+                \(conf.css(isLight: true,isTransparent: false, alignment: alignment))
             }
             @media (prefers-color-scheme: dark) {
-                \(conf.css(isLight: false, alignment: alignment))
+                \(conf.css(isLight: false,isTransparent: false, alignment: alignment))
             }
             \(conf.customCSS)
             body {
