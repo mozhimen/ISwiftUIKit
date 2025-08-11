@@ -42,7 +42,7 @@ public struct Carousel<T:Identifiable,C:View,I:View>: View {
                     }
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
-                .offset(x: CGFloat(self._currentIndex) * -geometry.size.width, y: 0)
+                .offset(x: CGFloat(self._currentIndex) * -(geometry.size.width+_spacing/2), y: 0)
                 .animation(.spring())
                 // Comment .onReceive method, to omit the Slider with time
                 .onReceive(self._timer) { _ in
