@@ -12,11 +12,15 @@ let package = Package(
             name: "ISwiftUIKit.Carousel",
             targets: ["ISwiftUIKit.Carousel"]),
     ],
+    dependencies: [
+        .package(name: "SUtilKit.SwiftUI", path: "../../SUtilKit/SwiftUI")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "ISwiftUIKit.Carousel"),
+            name: "ISwiftUIKit.Carousel",
+            dependencies: ["SUtilKit.SwiftUI"]),
 
     ]
 )
