@@ -36,7 +36,7 @@ public struct Carousel<T:Identifiable,C:View,I:View>: View {
         GeometryReader { geometry in
             // 1
             ZStack(alignment: .bottom) {
-                LazyHStack(spacing: _spacing) {
+                HStack(spacing: _spacing) {
                     ForEach(_datas) {data in
                         self._content(geometry,data)
                     }
@@ -110,57 +110,34 @@ public struct Indicator: View {
     }
 }
 
-//struct ImageCarouselView_Previews: PreviewProvider {
-//    static var previews: some View {
-//
-//        // 8
-//        Carousel(numberContent: 3, content: {geometry in
-//                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
-//                    switch p {
-//                    case .failure:
-//                        Image(systemName: "photo")
-//                            .font(.largeTitle)
-//                    case.success(let image):
-//                        image.resizable()
-//                    default:
-//                        ProgressView()
-//                    }
-//                })
-//                .scaledToFill()
-//                .frame(width: geometry.size.width, height: geometry.size.height)
-//                .clipped()
-//                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
-//                    switch p {
-//                    case .failure:
-//                        Image(systemName: "photo")
-//                            .font(.largeTitle)
-//                    case.success(let image):
-//                        image.resizable()
-//                    default:
-//                        ProgressView()
-//                    }
-//                })
-//                .scaledToFill()
-//                .frame(width: geometry.size.width, height: geometry.size.height)
-//                .clipped()
-//                AsyncImage(url: URL(string: "https://hws.dev/paul.jpg"), content: {p in
-//                    switch p {
-//                    case .failure:
-//                        Image(systemName: "photo")
-//                            .font(.largeTitle)
-//                    case.success(let image):
-//                        image.resizable()
-//                    default:
-//                        ProgressView()
-//                    }
-//                })
-//                .scaledToFill()
-//                .frame(width: geometry.size.width, height: geometry.size.height)
-//                .clipped()
-//            }
-//        , indicator: { b,n in
-//            Indicator(currentIndex: b, numberContent: n)
-//        })
-//        .frame(width: .infinity, height: 300, alignment: .center)
-//    }
-//}
+struct ImageCarouselView_Previews: PreviewProvider {
+    static var previews: some View {
+
+        let datas = [
+            MKey(id: "1", name: "https://hws.dev/paul.jpg"),
+            MKey(id: "2", name: "https://hws.dev/paul.jpg"),
+            MKey(id: "3", name: "https://hws.dev/paul.jpg"),
+            MKey(id: "4", name: "https://hws.dev/paul.jpg"),
+        ]
+        Carousel(datas: datas, spacing: 10, content: {geometry,data in
+            AsyncImage(url: URL(string: data.name), content: {p in
+                switch p {
+                case .failure:
+                    Image(systemName: "photo")
+                        .font(.largeTitle)
+                case.success(let image):
+                    image.resizable()
+                default:
+                    ProgressView()
+                }
+            })
+            .scaledToFill()
+            .background(Color.blue)
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .clipped()
+        }, indicator: {b,n in
+            Indicator(currentIndex: b, numberContent: n)
+        })
+        .frame(width: .infinity, height: 300, alignment: .center)
+    }
+}
