@@ -17,6 +17,13 @@ public struct GridFixed<T,Content:View>:View {
     private var _rowCount: Int {
         UtilKInt.intCeil(a: _datas.count, b: _columnCount)//行数
     }
+    private var _isSingleRow: Bool {
+        _datas.count <= _columnCount
+    }
+    
+    private var _remainingItemsCount: Int {
+        _isSingleRow ? _columnCount - _datas.count : 0
+    }
     
     public init(datas:[T],columnCount:Int,alignment: Alignment = .center, horizontalSpacing: CGFloat? = nil, verticalSpacing: CGFloat? = nil, @ViewBuilder content:@escaping IAB_CListener<T,Int,Content>) {
         _datas = datas
@@ -40,7 +47,14 @@ public struct GridFixed<T,Content:View>:View {
                     GridRow.init(content: {
                         ForEach(Array(items(forRow: indexRow).enumerated()), id: \.offset) { (column, item) in
                             _content(item, indexRow * _columnCount + column)
-                                                }
+                        }
+                        // 仅当只有一行且不足时补充Spacer
+                        if _isSingleRow && _remainingItemsCount > 0 {
+                            ForEach(0..<_remainingItemsCount, id: \.self) { _ in
+                                Spacer()
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
                     })
                 })
             })
@@ -49,7 +63,7 @@ public struct GridFixed<T,Content:View>:View {
 }
 
 #Preview(body: {
-    GridFixed(datas: ["1","2","3","4"], columnCount: 3, content: {data,index in
+    GridFixed(datas: ["1","2","3","4"], columnCount: 6, content: {data,index in
         Text(data)
             .frame(maxWidth: .infinity)
             .debugBorder()
