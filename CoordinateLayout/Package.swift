@@ -15,7 +15,8 @@ let package = Package(
             targets: ["ISwiftUIKit.CoordinateLayout"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/siteline/swiftui-introspect", from: "1.4.0-beta.3"),
+        .package(name:"ISwiftUIKit_Introspect",path:"../../ISwiftUIKit_Introspect")
+//        .package(url: "https://github.com/siteline/swiftui-introspect", from: "1.4.0-beta.3"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,7 +24,8 @@ let package = Package(
         .target(
             name: "ISwiftUIKit.CoordinateLayout",
             dependencies: [
-                .product(name: "SwiftUIIntrospect", package: "swiftui-introspect")
+                .product(name: "SwiftUIIntrospect",package:"ISwiftUIKit_Introspect")
+                
             ],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")

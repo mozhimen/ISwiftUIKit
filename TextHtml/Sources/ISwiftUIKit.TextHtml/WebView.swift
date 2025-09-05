@@ -14,7 +14,7 @@ import SafariServices
 struct WebView {
     @Environment(\.multilineTextAlignment) var alignment
     @Binding var dynamicHeight: CGFloat
-
+    
     let html: String
     let conf: Configuration
     let width: CGFloat
@@ -50,14 +50,14 @@ extension WebView: UIViewRepresentable {
         
         return webview
     }
-
+    
     func updateUIView(_ uiView: WKWebView, context: Context) {
         DispatchQueue.main.async {
             uiView.loadHTMLString(generateHTML(), baseURL: conf.baseURL)
             uiView.frame.size = .init(width: width, height: dynamicHeight)
         }
     }
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
@@ -80,16 +80,16 @@ extension WebView: NSViewRepresentable {
             webview.loadHTMLString(generateHTML(), baseURL: conf.baseURL)
         }
         webview.setValue(false, forKey: "drawsBackground")
-
+        
         return webview
     }
-
+    
     func updateNSView(_ nsView: WKWebView, context _: Context) {
         DispatchQueue.main.async {
             nsView.loadHTMLString(generateHTML(), baseURL: conf.baseURL)
         }
     }
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
@@ -103,24 +103,79 @@ extension WebView {
         init(_ parent: WebView) {
             self.parent = parent
         }
-                
-
+        
+        
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             if message.name == "notifyCompletion" {
                 if let height = message.body as? NSNumber {
-                            let cgFloatHeight = CGFloat(height.doubleValue)
-                            DispatchQueue.main.async {
-                                withAnimation(self.parent.conf.transition) {
-                                    self.parent.dynamicHeight = cgFloatHeight
-                                }
-                            }
+                    let cgFloatHeight = CGFloat(height.doubleValue)
+                    DispatchQueue.main.async {
+                        withAnimation(self.parent.conf.transition) {
+                            self.parent.dynamicHeight = cgFloatHeight
                         }
+                    }
+                }
             }
         }
-        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        
+        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+            print("webView didCommit")
+        }
+        
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            print("webView didFinish")
+        }
+        
+        //        func webView(_ webView: WKWebView, respondTo challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
+        //            print("webView respondTo")
+        //        }
+        
+        //        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
+        //            print("webView decidePolicyFor")
+        //        }
+        
+        //        func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
+        //            print("webView decidePolicyFor navigationResponse")
+        //        }
+        
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: any Error) {
+            print("webView didFail withError")
+        }
+        
+        @available(iOS 14.5, *)
+        func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
+            print("webView navigationAction didBecome")
+        }
+        
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            print("webView didStartProvisionalNavigation")
+        }
+        
+        //        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences) async -> (WKNavigationActionPolicy, WKWebpagePreferences) {
+        //            print("webView decidePolicyFor preferences")
+        //        }
+        
+        //        func webView(_ webView: WKWebView, shouldAllowDeprecatedTLSFor challenge: URLAuthenticationChallenge) async -> Bool {
+        //            print("webview shouldAllowDeprecatedTLSFor")
+        //        }
+        
+        func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping @MainActor (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+            print("webview decidePolicyFor didReceive completionHandler")
+            // 默认处理：让系统处理所有认证挑战
+            completionHandler(.performDefaultHandling, nil)
+        }
+        
+        @available(iOS 14.5, *)
+        func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
+            print("webview navigationResponse didBecome")
+        }
+        
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
+            print("webview decidePolicyFor decisionHandler")
             guard navigationAction.navigationType == WKNavigationType.linkActivated,
                   var url = navigationAction.request.url else {
                 decisionHandler(WKNavigationActionPolicy.allow)
+                print("webview fail")
                 return
             }
             
@@ -137,43 +192,63 @@ extension WebView {
                 
                 switch url.scheme {
                 case "mailto", "tel":
-                    #if canImport(UIKit)
+#if canImport(UIKit)
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                    #else
+#else
                     NSWorkspace.shared.open(url)
-                    #endif
+#endif
                 case "http", "https":
                     switch parent.conf.linkOpenType {
-                        #if canImport(UIKit)
+#if canImport(UIKit)
                     case let .SFSafariView(conf, isReaderActivated, isAnimated):
                         if let reader = isReaderActivated {
                             conf.entersReaderIfAvailable = reader
                         }
                         let root = UIApplication.shared.windows.first?.rootViewController
                         root?.present(SFSafariViewController(url: url, configuration: conf), animated: isAnimated, completion: nil)
-                        #endif
+#endif
                     case .Safari:
-                        #if canImport(UIKit)
+#if canImport(UIKit)
                         UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                        #else
+#else
                         NSWorkspace.shared.open(url)
-                        #endif
+#endif
                     case .none, .custom:
                         break
                     }
                 default:
-                    #if canImport(UIKit)
+#if canImport(UIKit)
                     if UIApplication.shared.canOpenURL(url) {
                         UIApplication.shared.open(url, options: [:], completionHandler: nil)
                     }
-                    #else
+#else
                     NSWorkspace.shared.open(url)
-                    #endif
+#endif
                 }
             }
             
             decisionHandler(WKNavigationActionPolicy.cancel)
         }
+        
+        func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping @MainActor (WKNavigationResponsePolicy) -> Void) {
+            print("webview decidePolicyFor decisionHandler")
+        }
+        
+        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: any Error) {
+            print("webview didFailProvisionalNavigation withError")
+        }
+        
+        func webView(_ webView: WKWebView, authenticationChallenge challenge: URLAuthenticationChallenge, shouldAllowDeprecatedTLS decisionHandler: @escaping @MainActor (Bool) -> Void) {
+            print("webview authenticationChallenge shouldAllowDeprecatedTLS")
+        }
+        
+        func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+            print("webview didReceiveServerRedirectForProvisionalNavigation")
+        }
+        
+        //        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping @MainActor (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
+        //            print("webview decidePolicyFor preferences")
+        //        }
     }
 }
 
@@ -195,7 +270,7 @@ extension WebView {
                 }
                 window.onload = function () {
                   syncHeight();
-
+            
                   var imgs = document.getElementsByTagName('img');
                   for (var i = 0; i < imgs.length; i++) {
                     imgs[i].onload = syncHeight;

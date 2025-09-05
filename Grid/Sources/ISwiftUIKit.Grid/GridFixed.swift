@@ -66,7 +66,6 @@ public struct GridFixed<T,Content:View>:View {
     GridFixed(datas: ["1","2","3","4"], columnCount: 6, content: {data,index in
         Text(data)
             .frame(maxWidth: .infinity)
-            .debugBorder()
     })
     .frame(maxWidth: .infinity)
 })
