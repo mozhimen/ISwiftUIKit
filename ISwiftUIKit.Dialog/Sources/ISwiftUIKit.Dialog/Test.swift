@@ -81,17 +81,7 @@ struct ContentView: View {
     }
 }
 
-struct DialogView:View {
-    var body: some View {
-        DialogContainerView({
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 250)
-                .cornerRadius(10)
-        })
-    }
-}
+
 
 // Sheet 视图
 struct SheetView: View {
