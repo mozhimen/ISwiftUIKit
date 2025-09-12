@@ -24,6 +24,8 @@ struct ContentView1: View {
 }
 
 struct DialogView:View {
+    @Environment(\.dialogViewController) private var holder
+    
     var body: some View {
 //        DialogContainerView(
 //            onDismissRequest: {},
@@ -46,9 +48,26 @@ struct DialogView:View {
                     .frame(width: 250)
                     .cornerRadius(10)
                     .onTapGesture(perform: {
-                        actions.disappear()
-                        actions.dismiss(false)
+//                        actions.disappear()
+//                        actions.dismiss(false)
+                        holder?.present(builder: {
+                            LoadingView()
+                        })
                     })
+        })
+    }
+}
+
+struct LoadingView:View {
+    var body: some View {
+        DialogContainerView(onDismissRequest: {
+            
+        }, content: { actions in
+            ZStack(content: {
+                ProgressView()
+            })
+            .frame(width: 100,height: 100)
+            .background(Color.white)
         })
     }
 }
